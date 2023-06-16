@@ -1,0 +1,25 @@
+type User
+  @model
+  @auth(rules: [{allow: public, operations: [read]}, {allow: owner}]) {
+  username: String! @primaryKey
+  name: String
+  bio: String
+  pronouns: String
+  gender: String
+  followers: [String]
+  following: [String]
+  profilePicKey: String
+}
+
+type Post @model @auth(rules: [{allow: owner}]) {
+  imageKey: String
+  caption: String
+  likes: Int
+  comments: [Comment]
+}
+
+type Comment {
+  id: ID!
+  comment: String
+  likes: Int
+}

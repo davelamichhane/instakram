@@ -1,0 +1,14 @@
+{
+  "resourceName": "InstakramFinalStorage",
+  "policyUUID": "21f2560d",
+  "bucketName": "instakramfinal0c2d0e5175694307b49fe3a35b7dcf02",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

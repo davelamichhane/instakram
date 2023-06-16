@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "instakramfinal",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authinstakramfinalc3caef6c",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
