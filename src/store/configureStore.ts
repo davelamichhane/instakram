@@ -1,13 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
-import fetchDataReducer from './fetchDataSlice'
 import generalReducer from './generalSlice'
 import profileInfoReducer from './profileInfoSlice'
+import guestProfileInfoReducer from './guestProfileInfoSlice'
 
 export const store = configureStore({
   reducer: {
     profileInfo:profileInfoReducer,
-    fetchData:fetchDataReducer,
-    general:generalReducer
+    general:generalReducer,
+    guestProfileInfo:guestProfileInfoReducer
   },
 });
 

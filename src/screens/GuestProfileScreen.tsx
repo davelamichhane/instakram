@@ -1,14 +1,9 @@
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Auth} from 'aws-amplify';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import {setIsLoggedIn} from '../../store/generalSlice';
-import {useAppDispatch, useAppSelector} from '../../store/hooks';
-import {resetProfileInfo} from '../../store/profileInfoSlice';
+import {useAppSelector} from '../store/hooks';
 
-const Header: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const dispatch = useAppDispatch();
+const GuestProfile: React.FC = () => {
   const {
     username,
     profilePicKey,
@@ -18,30 +13,11 @@ const Header: React.FC = () => {
     name,
     gender,
     pronouns,
-  } = useAppSelector(state => state.profileInfo.profile.getUser);
-
+  } = useAppSelector(state => state.guestProfileInfo.profile.getUser);
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const arrayLength = (arr: any[] | null): number => {
     if (arr) return arr.length;
     return 0;
-  };
-
-  const handleSignout = async () => {
-    console.log('1. Wipe user data 2. Signout 3. set IsLoggedIn to true');
-    try {
-      dispatch(resetProfileInfo());
-      console.log('Complete #1');
-
-      await Auth.signOut();
-      console.log('Complete #2');
-
-      dispatch(setIsLoggedIn(false));
-      console.log('Complete #3');
-    } catch (err) {
-      console.log(
-        'Error Origin: handleSignout/Header/profile/components\n',
-        err,
-      );
-    }
   };
 
   const handleFollow = async () => {
@@ -67,10 +43,11 @@ const Header: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Text style={styles.username}>{username}</Text>
-        <TouchableOpacity onPress={handleSignout}>
-          <Text style={styles.signout}>signout</Text>
+        {/* Go back */}
+        <TouchableOpacity onPress={()=>navigation.goBack()}>
+          <Text style={styles.username}>{'<<<'}</Text>
         </TouchableOpacity>
+        <Text style={styles.username}>{username}</Text>
       </View>
 
       <View style={styles.middle}>
@@ -79,7 +56,7 @@ const Header: React.FC = () => {
           source={
             profilePicKey
               ? {uri: profilePicKey}
-              : require('../../assets/profile_icon.jpg')
+              : require('../assets/profile_icon.jpg')
           }
         />
         <NumShow name="Posts" number={24} />
@@ -100,23 +77,16 @@ const Header: React.FC = () => {
           justifyContent: 'space-evenly',
           marginVertical: 10,
         }}>
-        {/* Navigate to Edit Profile */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('UpdateProfile')}>
-          <Text style={{color: '#fff'}}>Edit Profile</Text>
+        {/* Add Follow feature */}
+        <TouchableOpacity style={styles.button} onPress={handleFollow}>
+          <Text style={{color: '#fff'}}>Follow</Text>
         </TouchableOpacity>
 
         {/* Navigate to Temp */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Temp')}>
-          <Text style={{color: '#fff'}}>Share Profile</Text>
-        </TouchableOpacity>
-
-        {/* Add Follow feature */}
-        <TouchableOpacity style={styles.button} onPress={handleFollow}>
-          <Text style={{color: '#fff'}}>Follow</Text>
+          <Text style={{color: '#fff'}}>Message</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -125,17 +95,19 @@ const Header: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'column',
+    backgroundColor: '#000',
   },
   top: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginHorizontal: 9,
   },
   username: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 20,
+    marginRight:20
   },
   signout: {
     color: '#fff',
@@ -167,10 +139,10 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#808080',
     borderRadius: 5,
-    padding: 10,
-    width: '30%',
+    padding: 8,
+    width: '47%',
     alignItems: 'center',
   },
 });
 
-export default Header;
+export default GuestProfile;

@@ -1,4 +1,4 @@
-import {View, Text, Image, StyleSheet} from 'react-native'
+import {View, Image, StyleSheet} from 'react-native'
 import SignupForm from '../components/signup/SignupForm';
 
 const SignupScreen = () => {

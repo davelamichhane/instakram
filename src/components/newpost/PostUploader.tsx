@@ -1,26 +1,26 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {API, Storage} from 'aws-amplify';
 import {useState} from 'react';
 import {View, Image, TextInput, Button} from 'react-native';
-import {useSelector} from 'react-redux';
-import * as Yup from 'yup';
 import {createPost} from '../../graphql/mutations';
-import {RootState} from '../../store/configureStore';
 import awsmobile from '../../aws-exports';
 
-const {aws_user_files_s3_bucket: bucket, aws_user_files_s3_bucket_region:region} = awsmobile
-
-const uploadSchema = Yup.object().shape({
-  caption: Yup.string().max(2200, 'Caption has reaced max character!'),
-});
+const {
+  aws_user_files_s3_bucket: bucket,
+  aws_user_files_s3_bucket_region: region,
+} = awsmobile;
 
 const PostUploader: React.FC = () => {
   const [captionText, setCaptionText] = useState('');
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const imageUri = useSelector<RootState, string>(
-    state => state.general.imageUri,
-  );
+  const route = useRoute<RouteProp<{params: {imageUri: string}}>>();
+  const {imageUri} = route.params;
 
   const uploadImage = async (caption: string) => {
     try {
@@ -40,7 +40,7 @@ const PostUploader: React.FC = () => {
           variables: {
             input: {
               caption: caption,
-              imageUrl: `https://${bucket}.${region}.amazonaws.com/public/${fileName}`
+              imageUrl: `https://${bucket}.${region}.amazonaws.com/public/${fileName}`,
             },
           },
           authMode: 'AMAZON_COGNITO_USER_POOLS',

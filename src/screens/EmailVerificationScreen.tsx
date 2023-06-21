@@ -1,17 +1,22 @@
 import {API, Auth} from 'aws-amplify';
 import {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Button} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {AccountType, setIsLoggedIn} from '../store/generalSlice';
-import {RootState} from '../store/configureStore';
+import {setIsLoggedIn} from '../store/generalSlice';
 import {createUser} from '../graphql/mutations';
+import {fetchData} from '../store/profileInfoSlice';
+import {useRoute, RouteProp} from '@react-navigation/native';
+import {useAppDispatch} from '../store/hooks';
+
+type RouteParams = {
+  username: string;
+  password: string;
+};
 
 const EmailVerification = () => {
-  const {password, username} = useSelector<RootState, AccountType>(
-    state => state.general.account,
-  );
+  const route = useRoute<RouteProp<{params: RouteParams}, 'params'>>();
+  const {username, password} = route.params;
   const [verificationText, setVerificationText] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleChange = (text: string) => {
     setVerificationText(text);
@@ -22,11 +27,18 @@ const EmailVerification = () => {
     username: string,
     password: string,
   ) => {
+    console.log(
+      '1. verify email 2. sign in 3. create user in DB 4. fetch data from db 5. set isLogged true',
+    );
     try {
       // verify email
       await Auth.confirmSignUp(username, verificationCode);
+      console.log('Complete #1');
+
       //sign in
       await Auth.signIn(username, password);
+      console.log('Complete #2');
+
       // create user in database
       await API.graphql({
         query: createUser,
@@ -37,10 +49,17 @@ const EmailVerification = () => {
         },
         authMode: 'AMAZON_COGNITO_USER_POOLS',
       });
+      console.log('Complete #3');
+
+      // save user info for easy access
+      dispatch(fetchData({username}));
+      console.log('Complete #4');
+
       // set loggied in true
       dispatch(setIsLoggedIn(true));
-    } catch (error: any) {
-      console.log('error verifying email ', error);
+      console.log('Complete #5');
+    } catch (err: any) {
+      console.log('Error Origin: handleSubmit/EmailVerification', err);
     }
   };
 

@@ -1,13 +1,13 @@
 {
   "api": {
-    "instakramfinal": {
+    "instakram": {
       "dependsOn": [
         {
           "attributes": [
             "UserPoolId"
           ],
           "category": "auth",
-          "resourceName": "instakramfinalc3caef6c"
+          "resourceName": "instakramd50d4fc2"
         }
       ],
       "output": {
@@ -16,7 +16,7 @@
             {
               "authenticationType": "AMAZON_COGNITO_USER_POOLS",
               "userPoolConfig": {
-                "userPoolId": "authinstakramfinalc3caef6c"
+                "userPoolId": "authinstakramd50d4fc2"
               }
             }
           ],
@@ -33,7 +33,7 @@
     }
   },
   "auth": {
-    "instakramfinalc3caef6c": {
+    "instakramd50d4fc2": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -59,7 +59,7 @@
     }
   },
   "storage": {
-    "InstakramFinalStorage": {
+    "instakram": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "S3"

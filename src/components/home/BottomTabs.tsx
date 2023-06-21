@@ -1,9 +1,8 @@
 import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {Divider} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
 import images from '../../assets/bottomTabIcons/images';
-import {RootState} from '../../store/configureStore';
 import {ActiveTabType, setActiveTab} from '../../store/generalSlice';
+import {useAppDispatch, useAppSelector} from '../../store/hooks';
 
 const iconNames: ActiveTabType[] = [
   'home',
@@ -13,10 +12,12 @@ const iconNames: ActiveTabType[] = [
   'profile',
 ];
 const BottomTabs = () => {
-  const dispatch = useDispatch();
-  const activeTab = useSelector<RootState, string>(
-    state => state.general.activeTab,
+  const dispatch = useAppDispatch();
+  const activeTab = useAppSelector(state => state.general.activeTab);
+  const profileInfo = useAppSelector(
+    state => state.profileInfo.profile.getUser,
   );
+  const profilePicKey = profileInfo.profilePicKey
 
   const Icon: React.FC<{icon: ActiveTabType}> = ({icon}) => {
     const mode = activeTab === icon ? 'active' : 'inactive';
@@ -33,7 +34,13 @@ const BottomTabs = () => {
               ? {borderColor: 'white', borderWidth: 2}
               : null,
           ]}
-          source={images[icon][mode]}
+          source={
+            icon === 'profile'
+              ? profilePicKey
+                ? {uri: profilePicKey}
+                : require('../../assets/profile_icon.jpg')
+              : images[icon][mode]
+          }
         />
       </TouchableOpacity>
     );

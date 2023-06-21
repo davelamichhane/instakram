@@ -4,17 +4,15 @@ import BottomTabs from '../components/home/BottomTabs';
 import Header from '../components/home/Header';
 import Stories from '../components/home/Stories';
 import Search from '../components/search/Search';
-import Temp from '../components/Temp';
+import Temp from './TempScree';
 import {RootState} from '../store/configureStore';
 import {ActiveTabType} from '../store/generalSlice';
-import ProfileUpdateScreen from './ProfileUpdateScreen';
-import Splash from './SplashScreen';
+import ProfileScreen from './ProfileScreen';
 
 const ContainerScreen: React.FC = () => {
   const activeTab = useSelector<RootState, ActiveTabType>(
     state => state.general.activeTab,
   );
-
   const Display: React.FC<{activeTab: ActiveTabType}> = ({activeTab}) => {
     switch (activeTab) {
       case 'home':
@@ -29,9 +27,9 @@ const ContainerScreen: React.FC = () => {
       case 'reels':
         return <Temp />;
       case 'shop':
-        return <ProfileUpdateScreen />;
-      case 'profile':
         return <Temp />;
+      case 'profile':
+        return <ProfileScreen />;
       default:
         return <Temp />;
     }

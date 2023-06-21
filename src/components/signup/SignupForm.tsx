@@ -1,6 +1,6 @@
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {API, Auth} from 'aws-amplify';
+import {Auth} from 'aws-amplify';
 import {useState} from 'react';
 import {
   View,
@@ -9,17 +9,12 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
-import {createUser} from '../../graphql/mutations';
-import {setAccount} from '../../store/generalSlice';
-import { setAuthUsername } from '../../store/profileInfoSlice';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const dispatch = useDispatch();
 
   const onSignup = async (
     email: string,
@@ -29,16 +24,13 @@ const SignupForm = () => {
     try {
       // signup for user pool
       await Auth.signUp({
-        username,
+        username:username.toLowerCase(),
         password,
         attributes: {email},
         autoSignIn: {enabled: true},
       });
-      // save info in redux store
-      dispatch(setAccount({email, username, password}));
-      dispatch(setAuthUsername(username))
       // go to emial verification page
-      navigation.navigate('EmailVerification');
+      navigation.navigate('EmailVerification', {username, password});
     } catch (error: any) {
       // dont use any here!!
       console.log('error signing up: ', error);
@@ -53,6 +45,7 @@ const SignupForm = () => {
         value={email}
         placeholder="email"
         onChangeText={text => setEmail(text)}
+        autoCapitalize='none'
       />
 
       {/* username */}
@@ -61,6 +54,7 @@ const SignupForm = () => {
         value={username}
         placeholder="username"
         onChangeText={text => setUsername(text)}
+        autoCapitalize='none'
       />
 
       {/* password */}
@@ -69,6 +63,7 @@ const SignupForm = () => {
         value={password}
         placeholder="password"
         onChangeText={text => setPassword(text)}
+        autoCapitalize='none'
       />
 
       {/* submit */}

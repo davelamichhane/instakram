@@ -1,18 +1,10 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-export type AccountType = {
-  email: string;
-  username: string;
-  password: string;
-};
-
-export type ActiveTabType = 'home' | 'search' | 'reels' | 'shop' | 'profile';
+export type ActiveTabType = 'home' | 'search' | 'reels' | 'shop' | 'profile' | 'guest';
 
 export type GeneralState = {
   isLoggedIn: boolean;
   isWaiting:boolean;
-  account: AccountType;
-  imageUri: string;
   activeTab: ActiveTabType;
   temp: number;
 };
@@ -20,12 +12,6 @@ export type GeneralState = {
 const initialState: GeneralState = {
   isLoggedIn: false,
   isWaiting:false,
-  account: {
-    email: '',
-    username: '',
-    password: '',
-  },
-  imageUri: '',
   activeTab: 'home',
   temp:0
 };
@@ -40,12 +26,6 @@ export const generalSlice = createSlice({
     setIsWaiting: (state, action:PayloadAction<boolean>)=> {
     state.isWaiting = action.payload
     },
-    setAccount: (state, action: PayloadAction<AccountType>) => {
-      state.account = action.payload;
-    },
-    setImageUri: (state, action: PayloadAction<string>) => {
-      state.imageUri = action.payload;
-    },
     setActiveTab: (state, action: PayloadAction<ActiveTabType>) => {
       state.activeTab = action.payload;
     },
@@ -55,6 +35,6 @@ export const generalSlice = createSlice({
   },
 });
 
-export const {setIsLoggedIn, setIsWaiting, setAccount, setImageUri, setActiveTab, setTemp} =
+export const {setIsLoggedIn, setIsWaiting,  setActiveTab, setTemp} =
   generalSlice.actions;
 export default generalSlice.reducer;

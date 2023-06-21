@@ -10,14 +10,14 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
 import {setIsLoggedIn, setIsWaiting} from '../../store/generalSlice';
-import {setAuthUsername} from '../../store/profileInfoSlice';
+import { useAppDispatch } from '../../store/hooks';
+import { fetchData } from '../../store/profileInfoSlice';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch()
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   const onLogin = async (username: string, password: string) => {
@@ -27,8 +27,9 @@ const LoginForm = () => {
       await Auth.signIn(username, password);
       dispatch(setIsWaiting(false));
 
-      // save username for future use
-      dispatch(setAuthUsername(username));
+      // save user info for easy access
+       dispatch(fetchData({username}))
+
       // let the store know you're logged in
       dispatch(setIsLoggedIn(true));
     } catch (error: any) {

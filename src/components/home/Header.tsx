@@ -2,23 +2,17 @@ import {ParamListBase, useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useDispatch, useSelector} from 'react-redux';
-import {setImageUri} from '../../store/generalSlice';
 
 const Header: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const dispatch = useDispatch();
-  const handleSignout = () => {};
 
   return (
     <View style={styles.container}>
       {/* Instagram Logo */}
-      <TouchableOpacity onPress={handleSignout}>
         <Image
           style={styles.logo}
           source={require('../../assets/headerTabIcons/header-logo.png')}
         />
-      </TouchableOpacity>
 
       <View style={styles.iconsContainer}>
         {/* Add post */}
@@ -28,9 +22,7 @@ const Header: React.FC = () => {
               const result = await launchImageLibrary({mediaType: 'photo'});
               if (result.assets && result.assets[0].uri) {
                 const imageUri = result.assets[0].uri;
-                dispatch(setImageUri(imageUri));
-                navigation.navigate('NewPost');
-                console.log(imageUri);
+                navigation.navigate('NewPost', {imageUri});
               } else {
                 console.log('cant find image');
               }

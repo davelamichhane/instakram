@@ -1,0 +1,10 @@
+1. implement 'update profile pic' ==> Completed
+2. create profile screen with components
+  1. header
+  2. bio
+  3. posts
+  4. discover people
+3. create following/unfollowing feature
+4. create messaging
+5. create voice/video call
+

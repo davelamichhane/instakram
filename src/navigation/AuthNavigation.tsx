@@ -1,30 +1,31 @@
 import {Auth} from 'aws-amplify';
 import {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
 import Splash from '../screens/SplashScreen';
-import {RootState} from '../store/configureStore';
 import {setIsLoggedIn, setIsWaiting} from '../store/generalSlice';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {fetchData} from '../store/profileInfoSlice';
 import {SignedInStack, SignedOutStack} from './NavigationStack';
 
 const AuthNavigation = () => {
-  const isLoggedIn = useSelector<RootState, boolean>(
-    state => state.general.isLoggedIn,
-  );
-  const isWaiting = useSelector<RootState, boolean>(
-    state => state.general.isWaiting,
-  );
-  const dispatch = useDispatch();
-
+  const isLoggedIn = useAppSelector(state => state.general.isLoggedIn);
+  const isWaiting = useAppSelector(state => state.general.isWaiting);
+  const activeTab = useAppSelector(state=>state.general.activeTab)
+    console.log(activeTab)
+  const dispatch = useAppDispatch();
   // try to login with previous sessions
   useEffect(() => {
     const check = async () => {
       try {
         dispatch(setIsWaiting(true));
         await Auth.currentAuthenticatedUser({bypassCache: true});
+        const {username} = await Auth.currentAuthenticatedUser();
         dispatch(setIsWaiting(false));
+
+        dispatch(fetchData({username}));
+
         dispatch(setIsLoggedIn(true));
       } catch (e) {
-        dispatch(setIsWaiting(false))
+        dispatch(setIsWaiting(false));
         console.log(e);
       }
     };

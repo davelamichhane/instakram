@@ -1,61 +1,95 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, SerializedError} from '@reduxjs/toolkit';
 import {API} from 'aws-amplify';
 import {getUser} from '../graphql/queries';
 
-type ProfileInfoSliceState = {
+export type GetUser = {
   username: string;
-  profileInfo: {
-    name: string;
-    bio: string;
-    pronouns: string;
-    gender: string;
-    followers: string[];
-    following: string[];
-    profilePicKey: string;
+  name: string;
+  bio: string;
+  pronouns: string;
+  gender: string;
+  followers: string[];
+  following: string[];
+  profilePicKey: string;
+};
+
+export type ProfileInfoSliceState = {
+  isLoading: boolean;
+  profile: {
+    getUser: GetUser;
   };
+  error: SerializedError[];
 };
 
 const initialState: ProfileInfoSliceState = {
-  username: '',
-  profileInfo: {
-    name: '',
-    bio: '',
-    pronouns: '',
-    gender: '',
-    followers: [],
-    following: [],
-    profilePicKey: '',
+  isLoading: false,
+  profile: {
+    getUser: {
+      username: '',
+      name: '',
+      bio: '',
+      pronouns: '',
+      gender: '',
+      followers: [],
+      following: [],
+      profilePicKey: '',
+    },
   },
+  error: [],
 };
 
-const fetchData = createAsyncThunk('profileInfo/fetchData', async () => {
-  const response = API.graphql({
-    query: getUser,
-  });
-  return response;
-});
+export const fetchData = createAsyncThunk(
+  'profileInfo/fetchData',
+  async ({username, thangs}: {username: string; thangs?: string[]}) => {
+    const query = !thangs
+      ? getUser
+      : /* GraphQL */ `
+    query GetUser($username:String!){
+    getUser(username:$username){
+      ${thangs.join('\n')}
+      }
+  }
+    `;
+    try {
+      const response = await API.graphql({
+        query,
+        variables: {
+          username: username.toLowerCase(),
+        },
+      });
+      console.log('data fetching successful!');
+      return response;
+    } catch (e) {
+      console.log('data fetching unsuccessful! ', e);
+    }
+  },
+);
 
 export const profileInfoSlice = createSlice({
   name: 'profileInfo',
   initialState,
   reducers: {
-    setAuthUsername: (state,action:PayloadAction<string>)=>{
-      state.username = action.payload
-    }
+    resetProfileInfo: () => initialState,
   },
   extraReducers: builder => {
     builder
       .addCase(fetchData.pending, state => {
-        state.username = 'ahahah'
+        state.isLoading = true;
       })
-      .addCase(fetchData.fulfilled, (state, action) => {
-        state.username = 'asdfa'
+      .addCase(fetchData.fulfilled, (state, {payload}) => {
+        if (payload && 'data' in payload) {
+          state.isLoading = false;
+          state.profile = {
+            getUser: {...state.profile.getUser, ...payload.data.getUser},
+          };
+        }
       })
-      .addCase(fetchData.rejected, (state, action) => {
-        state.username = 'asdfasdfasdfa'
+      .addCase(fetchData.rejected, (state, {error}) => {
+        state.isLoading = false;
+        state.error.push(error);
       });
   },
 });
 
-export const {setAuthUsername}= profileInfoSlice.actions
+export const {resetProfileInfo} = profileInfoSlice.actions;
 export default profileInfoSlice.reducer;

@@ -1,6 +1,4 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {API} from 'aws-amplify';
+import {API, Storage} from 'aws-amplify';
 import {useState} from 'react';
 import {
   View,
@@ -11,10 +9,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Divider} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {updateUser} from '../graphql/mutations';
-import {RootState} from '../store/configureStore';
 import {setActiveTab} from '../store/generalSlice';
+import awsmobile from '../aws-exports';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {fetchData} from '../store/profileInfoSlice';
+import { useNavigation } from '@react-navigation/native';
 
 const initalObj = {
   name: '',
@@ -23,13 +24,19 @@ const initalObj = {
   pronouns: '',
 };
 
+const {
+  aws_user_files_s3_bucket: bucket,
+  aws_user_files_s3_bucket_region: region,
+} = awsmobile;
+
 const ProfileUpdateScreen: React.FC = () => {
   const [profileInfo, setProfileInfo] = useState(initalObj);
-  const username = useSelector<RootState, string>(
-    state => state.profileInfo.username,
+  const {username, profilePicKey} = useAppSelector(
+    state => state.profileInfo.profile.getUser,
   );
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation()
+
   // handle text change in input fields
   const handleChange = (text: string, field: string) => {
     setProfileInfo(prev => ({...prev, [field]: text}));
@@ -37,13 +44,9 @@ const ProfileUpdateScreen: React.FC = () => {
 
   // handle submit button on top right
   const handleSubmit = async () => {
+    console.log(username)
+    console.log('1. update DB 2. fetch Data from DB 3. Set active Tab to profile')
     try {
-      if (!profileInfo || !username) {
-        console.log('invalid profileInfor or Username');
-        console.log('username: ', username);
-        console.log('profileInfo: ', profileInfo);
-        return;
-      }
       await API.graphql({
         query: updateUser,
         variables: {
@@ -51,10 +54,62 @@ const ProfileUpdateScreen: React.FC = () => {
         },
         authMode: 'AMAZON_COGNITO_USER_POOLS',
       });
+      console.log('Completed #1')
       setProfileInfo(initalObj);
-      dispatch(setActiveTab('home'));
+      dispatch(fetchData({username, thangs:['name', 'bio', 'gender', 'pronouns']}));
+      console.log('Completed #2')
+      dispatch(setActiveTab('profile'));
+      console.log('Completed #3')
     } catch (e) {
-      console.log(e);
+      console.log('Error Origin: handelSubmit/ProfileUpdateScreen\n',e);
+    }
+  };
+
+  // handle 'update profile pic' link
+  const handleUpload = async () => {
+    console.log(username)
+    console.log('1. select photo from library 2. Upload photo to S3  3. Update DB about new image 4. Remove old image 5. Fetch data 6. Set activetab to home')
+    try {
+      // grab previous profile pic link so you can delete it after uploading a new one
+
+      // launch image lib
+      const result = await launchImageLibrary({mediaType: 'photo'});
+      if (result.assets && result.assets[0].uri) {
+        const imageUri = result.assets[0].uri;
+
+        // upload pic
+        const response = await fetch(imageUri);
+        const imageBlob = await response.blob();
+        const fileName = imageUri.split('/').pop();
+        console.log('Completed #1')
+        if (fileName) {
+          await Storage.put(fileName, imageBlob, {contentType: 'image/jpeg'});
+          console.log('Completed #2')
+        }
+        // update user info
+        await API.graphql({
+          query: updateUser,
+          variables: {
+            input: {
+              username,
+              profilePicKey: `https://${bucket}.s3.${region}.amazonaws.com/public/${fileName}`,
+            },
+          },
+          authMode: 'AMAZON_COGNITO_USER_POOLS',
+        });
+        console.log('Completed #3')
+
+        // Delete the previous photo from s3
+        await Storage.remove(`public/${fileName}`);
+        console.log('Completed #4')
+        // fetch updated Data
+        dispatch(fetchData({username, thangs:['profilePicKey']}));
+        console.log('Completed #5')
+        dispatch(setActiveTab('home'));
+        console.log('Completed #6')
+      }
+    } catch (e) {
+      console.log('Error Origin: handleUpload/ProfileUpdateScreen\n',e);
     }
   };
 
@@ -63,7 +118,7 @@ const ProfileUpdateScreen: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         {/* Go Back Button */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.goBack()}>
           <Text style={[styles.headerText, {fontSize: 24, fontWeight: '200'}]}>
             X
           </Text>
@@ -81,10 +136,10 @@ const ProfileUpdateScreen: React.FC = () => {
       {/* Profile Pic */}
       <View style={styles.imageBox}>
         <Image
-          source={require('../assets/bottomTabIcons/profile.jpg')}
+          source={ profilePicKey ?{uri:profilePicKey}: require('../assets/profile_icon.jpg')}
           style={styles.image}
         />
-        <TouchableOpacity style={{marginVertical: 5}}>
+        <TouchableOpacity style={{marginVertical: 5}} onPress={handleUpload}>
           <Text style={{color: '#0447cd'}}>update profile pic</Text>
         </TouchableOpacity>
       </View>
@@ -129,6 +184,8 @@ const ProfileUpdateScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    backgroundColor:'#000',
+    flex:1
   },
   label: {
     color: '#fff',
