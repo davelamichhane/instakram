@@ -15,10 +15,10 @@
       "auth": {
         "instakramd50d4fc2": {}
       },
-      "api": {
+      "storage": {
         "instakram": {}
       },
-      "storage": {
+      "api": {
         "instakram": {}
       }
     }

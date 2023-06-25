@@ -105,7 +105,7 @@ export type CreatePostInput = {
 };
 
 export type CommentInput = {
-  id?: string | null,
+  id: string,
   comment?: string | null,
   likes?: number | null,
 };

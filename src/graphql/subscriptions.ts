@@ -19,6 +19,7 @@ export const onCreateUser = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -39,6 +40,7 @@ export const onUpdateUser = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -59,6 +61,7 @@ export const onDeleteUser = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -75,11 +78,13 @@ export const onCreatePost = /* GraphQL */ `
         id
         comment
         likes
+        __typename
       }
       id
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -96,11 +101,13 @@ export const onUpdatePost = /* GraphQL */ `
         id
         comment
         likes
+        __typename
       }
       id
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -117,11 +124,13 @@ export const onDeletePost = /* GraphQL */ `
         id
         comment
         likes
+        __typename
       }
       id
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;

@@ -22,14 +22,23 @@ const initialState: ProfileInfoSliceState = {
 
 export const fetchGuestData = createAsyncThunk(
   'profileInfo/fetchGuestData',
-  async (username:string) => {
+  async ({username, thangs}: {username: string; thangs?: string[]}) => {
     console.log('1. fetch guest data');
+    const query = !thangs
+      ? getUser
+      : /* GraphQL */ `
+    query FetchFollowersFromGuest($username:String!){
+      getUser(username:$username){
+    ${thangs.join('\n')}}
+  }
+    `;
     try {
       const response = await API.graphql({
-        query: getUser,
+        query,
         variables: {
           username: username.toLowerCase(),
         },
+        authMode:'AMAZON_COGNITO_USER_POOLS'
       });
       console.log('Completed #1');
 

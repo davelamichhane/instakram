@@ -16,7 +16,7 @@ const Temp: React.FC = () => {
       console.log('profile data not accessible yet!');
     }
   };
-  const handeGuestProfileLog = () => {
+  const handleGuestProfileLog = () => {
     if (guestProfileData) {
       console.log(guestProfileData);
     } else {
@@ -42,7 +42,7 @@ const Temp: React.FC = () => {
         <Button title="log profileinfo" onPress={handeProfileLog} />
       </View>
       <View style={styles.button}>
-        <Button title="log guestprofileinfo" onPress={handeGuestProfileLog} />
+        <Button title="log guestprofileinfo" onPress={handleGuestProfileLog} />
       </View>
       <View style={styles.button}>
         <Button

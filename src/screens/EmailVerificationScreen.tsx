@@ -12,7 +12,7 @@ type RouteParams = {
   password: string;
 };
 
-const EmailVerification = () => {
+const EmailVerification: React.FC = () => {
   const route = useRoute<RouteProp<{params: RouteParams}, 'params'>>();
   const {username, password} = route.params;
   const [verificationText, setVerificationText] = useState('');
@@ -27,19 +27,21 @@ const EmailVerification = () => {
     username: string,
     password: string,
   ) => {
-    console.log(
-      '1. verify email 2. sign in 3. create user in DB 4. fetch data from db 5. set isLogged true',
-    );
+    console.log(`
+Executing: handleSubmit/EmailVerificationScreen.tsx
+1. Verify email
+2. Sign in 
+3. Create user in database
+4. Save username to redux
+5. Set isLoggedIn to true
+`);
     try {
-      // verify email
       await Auth.confirmSignUp(username, verificationCode);
-      console.log('Complete #1');
+      console.log('Completed #1');
 
-      //sign in
       await Auth.signIn(username, password);
-      console.log('Complete #2');
+      console.log('Completed #2');
 
-      // create user in database
       await API.graphql({
         query: createUser,
         variables: {
@@ -49,17 +51,22 @@ const EmailVerification = () => {
         },
         authMode: 'AMAZON_COGNITO_USER_POOLS',
       });
-      console.log('Complete #3');
+      console.log('Completed #3');
 
-      // save user info for easy access
       dispatch(fetchData({username}));
-      console.log('Complete #4');
+      console.log('Completed #4');
 
-      // set loggied in true
       dispatch(setIsLoggedIn(true));
-      console.log('Complete #5');
-    } catch (err: any) {
-      console.log('Error Origin: handleSubmit/EmailVerification', err);
+      console.log('Completed #5');
+
+      console.log(
+        'Finished Executing: handleSubmit/EmailVerificationScreen.tsx',
+      );
+    } catch (err) {
+      console.log(
+        'Error Origin: handleSubmit/EmailVerificationScreen.tsx\n',
+        err,
+      );
     }
   };
 

@@ -1,19 +1,25 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-export type ActiveTabType = 'home' | 'search' | 'reels' | 'shop' | 'profile' | 'guest';
+export type ActiveTabType =
+  | 'home'
+  | 'search'
+  | 'reels'
+  | 'shop'
+  | 'profile'
+  | 'guest';
 
 export type GeneralState = {
   isLoggedIn: boolean;
-  isWaiting:boolean;
+  isWaiting: boolean;
   activeTab: ActiveTabType;
   temp: number;
 };
 
 const initialState: GeneralState = {
   isLoggedIn: false,
-  isWaiting:false,
+  isWaiting: false,
   activeTab: 'home',
-  temp:0
+  temp: 0,
 };
 
 export const generalSlice = createSlice({
@@ -23,18 +29,14 @@ export const generalSlice = createSlice({
     setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
       state.isLoggedIn = action.payload;
     },
-    setIsWaiting: (state, action:PayloadAction<boolean>)=> {
-    state.isWaiting = action.payload
+    setIsWaiting: (state, action: PayloadAction<boolean>) => {
+      state.isWaiting = action.payload;
     },
     setActiveTab: (state, action: PayloadAction<ActiveTabType>) => {
       state.activeTab = action.payload;
     },
-    setTemp: (state)=>{
-      state.temp++
-    }
   },
 });
 
-export const {setIsLoggedIn, setIsWaiting,  setActiveTab, setTemp} =
-  generalSlice.actions;
+export const {setIsLoggedIn, setIsWaiting, setActiveTab} = generalSlice.actions;
 export default generalSlice.reducer;

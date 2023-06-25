@@ -9,24 +9,33 @@ import {SignedInStack, SignedOutStack} from './NavigationStack';
 const AuthNavigation = () => {
   const isLoggedIn = useAppSelector(state => state.general.isLoggedIn);
   const isWaiting = useAppSelector(state => state.general.isWaiting);
-  const activeTab = useAppSelector(state=>state.general.activeTab)
-    console.log(activeTab)
   const dispatch = useAppDispatch();
-  // try to login with previous sessions
+
   useEffect(() => {
     const check = async () => {
+      console.log(`
+Executing: check/AuthNavigation.tsx inside a useEffect
+1. Render splashscreen, log in with previously saved info, turn off splashscreen
+2. Fetch user Data from DB
+3. Set isLoggedIn to true (redux)
+`);
       try {
         dispatch(setIsWaiting(true));
         await Auth.currentAuthenticatedUser({bypassCache: true});
         const {username} = await Auth.currentAuthenticatedUser();
         dispatch(setIsWaiting(false));
+        console.log('Completed #1');
 
         dispatch(fetchData({username}));
+        console.log('Completed #2');
 
         dispatch(setIsLoggedIn(true));
-      } catch (e) {
+        console.log('Completed #3');
+
+        console.log('Finished Executing: check/AuthNavigation.tsx');
+      } catch (err) {
         dispatch(setIsWaiting(false));
-        console.log(e);
+        console.log('Error Origin: check/AuthNavigation.tsx\n', err);
       }
     };
     check();

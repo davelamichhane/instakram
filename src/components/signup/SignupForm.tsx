@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const SignupForm = () => {
+const SignupForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -21,19 +21,27 @@ const SignupForm = () => {
     username: string,
     password: string,
   ) => {
+    console.log(`
+Executing: onSignup/SignupForm.tsx
+1. Signup for user pool
+2. Go to email verification page
+`);
     try {
-      // signup for user pool
       await Auth.signUp({
-        username:username.toLowerCase(),
+        username: username.toLowerCase(),
         password,
         attributes: {email},
         autoSignIn: {enabled: true},
       });
-      // go to emial verification page
+      console.log('Completed #1');
+
       navigation.navigate('EmailVerification', {username, password});
-    } catch (error: any) {
+      console.log('Completed #2');
+
+      console.log('Finished Executing: onSignup/SignupForm.tsx')
+    } catch (err) {
       // dont use any here!!
-      console.log('error signing up: ', error);
+      console.log('Error Origin: onSignup/SignupForm.tsx\n', err);
     }
   };
 
@@ -45,7 +53,7 @@ const SignupForm = () => {
         value={email}
         placeholder="email"
         onChangeText={text => setEmail(text)}
-        autoCapitalize='none'
+        autoCapitalize="none"
       />
 
       {/* username */}
@@ -54,7 +62,7 @@ const SignupForm = () => {
         value={username}
         placeholder="username"
         onChangeText={text => setUsername(text)}
-        autoCapitalize='none'
+        autoCapitalize="none"
       />
 
       {/* password */}
@@ -63,7 +71,7 @@ const SignupForm = () => {
         value={password}
         placeholder="password"
         onChangeText={text => setPassword(text)}
-        autoCapitalize='none'
+        autoCapitalize="none"
       />
 
       {/* submit */}

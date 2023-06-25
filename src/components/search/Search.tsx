@@ -11,7 +11,8 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import {setActiveTab} from '../../store/generalSlice';
+import {listSomeUsers} from '../../customGraphql/queries';
+import { setActiveTab } from '../../store/generalSlice';
 import {fetchGuestData} from '../../store/guestProfileInfoSlice';
 import {useAppDispatch, useAppSelector} from '../../store/hooks';
 
@@ -20,60 +21,64 @@ const Search: React.FC = () => {
   const [userObjects, setUserObjects] = useState<
     {username: string; name: string; profilePicKey: string}[]
   >([]);
-  const [selectedGuest, setSelectedGuest] = useState('');
   const dispatch = useAppDispatch();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const loggedInUser = useAppSelector(
+    state => state.profileInfo.profile.getUser.username,
+  );
 
   // when a username is searched for (submitted)
   const handleSearch = async () => {
-    console.log(
-      '1. Define query 2. Use query 3. Grab Data 4. setUsername with data',
-    );
+    console.log(`
+Executing: handleSearch/Search.tsx
+1. Grab Data using custom query
+2. setUsername with data
+`);
     try {
-      const query = /* GraphQL */ `
-        query ListUsers($username: String, $filter: ModelUserFilterInput) {
-          listUsers(username: $username, filter: $filter) {
-            items {
-              username
-              name
-              profilePicKey
-            }
-          }
-        }
-      `;
-      console.log('Complete #1');
-
       const response = await API.graphql({
-        query,
+        query: listSomeUsers,
         variables: {
           username: null,
           filter: {username: {contains: searchText.toLowerCase()}},
         },
+        authMode: 'AMAZON_COGNITO_USER_POOLS',
       });
-      console.log('Complete #2');
-
       const objects = (response as {data: {listUsers: {items: any[]}}}).data
         .listUsers.items;
-      console.log('Complete #3');
+      console.log('Complete #1');
 
       setUserObjects(objects);
-      console.log('Complete #4');
+      console.log('Complete #2');
+
+      console.log('Finished Executing: handleSearch/Search.tsx');
     } catch (err) {
-      console.log('Error Origin: handleSearch/Search/search/components', err);
+      console.log('Error Origin: handleSearch/Search.tsx', err);
     }
   };
 
   // when a search result is clicked
   const handleClick = (guest: string) => {
-    console.log('1. fetch guest data 2. navigate to guest profile screen');
+    console.log(`
+Executing: handleClick/Search.tsx
+1. If user clicks on his/her own username naviagate to profile. Else perform 2 & 3 
+2. fetch guest data 
+3. navigate to guest profile screen
+`);
     try {
-      dispatch(fetchGuestData(guest));
-      console.log('Completed #1');
+      if (guest === loggedInUser) {
+      dispatch(setActiveTab('profile'))
+        console.log('Completed #1');
+      } else {
+        dispatch(fetchGuestData({username: guest}));
+        console.log('Completed #2');
 
-      navigation.navigate('GuestProfile')
-      console.log('Completed #2');
+        navigation.navigate('GuestProfile');
+        console.log('Completed #3');
+      }
+
+      console.log('Finished Executing: handleClick/Search.tsx');
     } catch (err) {
-      console.log('Error Origin: handleClick/Search/search/components', err);
+      console.log('Error Origin: handleClick/Search.tsx', err);
     }
   };
 

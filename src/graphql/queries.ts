@@ -16,6 +16,7 @@ export const getUser = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -46,8 +47,10 @@ export const listUsers = /* GraphQL */ `
         createdAt
         updatedAt
         owner
+        __typename
       }
       nextToken
+      __typename
     }
   }
 `;
@@ -61,11 +64,13 @@ export const getPost = /* GraphQL */ `
         id
         comment
         likes
+        __typename
       }
       id
       createdAt
       updatedAt
       owner
+      __typename
     }
   }
 `;
@@ -84,13 +89,16 @@ export const listPosts = /* GraphQL */ `
           id
           comment
           likes
+          __typename
         }
         id
         createdAt
         updatedAt
         owner
+        __typename
       }
       nextToken
+      __typename
     }
   }
 `;

@@ -56,6 +56,7 @@ export const fetchData = createAsyncThunk(
         variables: {
           username: username.toLowerCase(),
         },
+        authMode:'AMAZON_COGNITO_USER_POOLS'
       });
       console.log('data fetching successful!');
       return response;
