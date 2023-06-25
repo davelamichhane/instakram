@@ -113,11 +113,6 @@ const Header: React.FC = () => {
           onPress={() => navigation.navigate('Temp')}>
           <Text style={{color: '#fff'}}>Share Profile</Text>
         </TouchableOpacity>
-
-        {/* Add Follow feature */}
-        <TouchableOpacity style={styles.button} onPress={handleFollow}>
-          <Text style={{color: '#fff'}}>Follow</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -168,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#808080',
     borderRadius: 5,
     padding: 10,
-    width: '30%',
+    width: '47%',
     alignItems: 'center',
   },
 });
