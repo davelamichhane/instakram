@@ -1,13 +1,12 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Auth} from 'aws-amplify';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import {setIsLoggedIn} from '../../store/generalSlice';
-import {useAppDispatch, useAppSelector} from '../../store/hooks';
-import {resetProfileInfo} from '../../store/profileInfoSlice';
+import { Auth } from 'aws-amplify';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useNav } from '../../navigation/hooks';
+import { setIsLoggedIn } from '../../store/generalSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { resetProfileInfo } from '../../store/profileInfoSlice';
 
 const Header: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigation = useNav()
   const dispatch = useAppDispatch();
   const {
     username,
@@ -44,15 +43,7 @@ const Header: React.FC = () => {
     }
   };
 
-  const handleFollow = async () => {
-    try {
-      console.log('ahah');
-    } catch (e) {
-      console.log('unable to follow: ', e);
-    }
-  };
-
-  const NumShow: React.FC<{name: string; number: number}> = ({
+  const NumShow: React.FC<{ name: string; number: number }> = ({
     name,
     number,
   }) => {
@@ -78,7 +69,7 @@ const Header: React.FC = () => {
           style={styles.image}
           source={
             profilePicKey
-              ? {uri: profilePicKey}
+              ? { uri: profilePicKey }
               : require('../../assets/profile_icon.jpg')
           }
         />
@@ -104,14 +95,14 @@ const Header: React.FC = () => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('UpdateProfile')}>
-          <Text style={{color: '#fff'}}>Edit Profile</Text>
+          <Text style={{ color: '#fff' }}>Edit Profile</Text>
         </TouchableOpacity>
 
         {/* Navigate to Temp */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Temp')}>
-          <Text style={{color: '#fff'}}>Share Profile</Text>
+          <Text style={{ color: '#fff' }}>Share Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -154,11 +145,11 @@ const styles = StyleSheet.create({
   component: {
     flexDirection: 'column',
   },
-  number: {color: '#fff', alignSelf: 'center', fontWeight: 'bold'},
-  name: {color: '#fff', alignSelf: 'center', fontWeight: 'bold'},
+  number: { color: '#fff', alignSelf: 'center', fontWeight: 'bold' },
+  name: { color: '#fff', alignSelf: 'center', fontWeight: 'bold' },
   biobox: {},
-  bio: {color: '#fff'},
-  subscript: {fontSize: 10, color: '#ccc', textTransform: 'lowercase'},
+  bio: { color: '#fff' },
+  subscript: { fontSize: 10, color: '#ccc', textTransform: 'lowercase' },
   button: {
     backgroundColor: '#808080',
     borderRadius: 5,

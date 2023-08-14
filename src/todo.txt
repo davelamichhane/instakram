@@ -4,7 +4,7 @@
   2. bio
   3. posts
   4. discover people
-3. create following/unfollowing feature
+3. create following/unfollowing feature=>completed
 4. create messaging
 5. create voice/video call
 

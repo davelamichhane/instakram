@@ -1,11 +1,9 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import { useNav } from '../../navigation/hooks';
 
 const Header: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
+const navigation = useNav()
   return (
     <View style={styles.container}>
       {/* Instagram Logo */}

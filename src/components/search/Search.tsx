@@ -1,8 +1,6 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {nanoid} from '@reduxjs/toolkit';
-import {API} from 'aws-amplify';
-import {useState} from 'react';
+import { nanoid } from '@reduxjs/toolkit';
+import { API } from 'aws-amplify';
+import { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,18 +9,19 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import {listSomeUsers} from '../../customGraphql/queries';
+import { listSomeUsers } from '../../customGraphql/queries';
+import { useNav } from '../../navigation/hooks';
 import { setActiveTab } from '../../store/generalSlice';
-import {fetchGuestData} from '../../store/guestProfileInfoSlice';
-import {useAppDispatch, useAppSelector} from '../../store/hooks';
+import { fetchGuestData } from '../../store/guestProfileInfoSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const Search: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [userObjects, setUserObjects] = useState<
-    {username: string; name: string; profilePicKey: string}[]
+    { username: string; name: string; profilePicKey: string }[]
   >([]);
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigation = useNav()
   const loggedInUser = useAppSelector(
     state => state.profileInfo.profile.getUser.username,
   );
@@ -39,11 +38,11 @@ Executing: handleSearch/Search.tsx
         query: listSomeUsers,
         variables: {
           username: null,
-          filter: {username: {contains: searchText.toLowerCase()}},
+          filter: { username: { contains: searchText.toLowerCase() } },
         },
         authMode: 'AMAZON_COGNITO_USER_POOLS',
       });
-      const objects = (response as {data: {listUsers: {items: any[]}}}).data
+      const objects = (response as { data: { listUsers: { items: any[] } } }).data
         .listUsers.items;
       console.log('Complete #1');
 
@@ -66,10 +65,10 @@ Executing: handleClick/Search.tsx
 `);
     try {
       if (guest === loggedInUser) {
-      dispatch(setActiveTab('profile'))
+        dispatch(setActiveTab('profile'))
         console.log('Completed #1');
       } else {
-        dispatch(fetchGuestData({username: guest}));
+        dispatch(fetchGuestData({ username: guest }));
         console.log('Completed #2');
 
         navigation.navigate('GuestProfile');
@@ -86,14 +85,14 @@ Executing: handleClick/Search.tsx
     name: string;
     username: string;
     profilePicKey: string;
-  }> = ({name, username, profilePicKey}) => {
+  }> = ({ name, username, profilePicKey }) => {
     return (
       <View style={styles.innerContainer}>
         <Image
           source={
             !profilePicKey
               ? require('../../assets/profile_icon.jpg')
-              : {uri: profilePicKey}
+              : { uri: profilePicKey }
           }
           style={styles.image}
         />
@@ -119,7 +118,7 @@ Executing: handleClick/Search.tsx
       />
       <View>
         {userObjects.map(userObject => {
-          const {name, username, profilePicKey} = userObject;
+          const { name, username, profilePicKey } = userObject;
           return (
             <TouchableOpacity
               key={nanoid()}
@@ -157,9 +156,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     alignItems: 'center',
   },
-  textContainer: {marginLeft: 5},
-  image: {height: 40, width: 40, borderRadius: 20, marginHorizontal: 10},
-  text: {color: 'white'},
+  textContainer: { marginLeft: 5 },
+  image: { height: 40, width: 40, borderRadius: 20, marginHorizontal: 10 },
+  text: { color: 'white' },
 });
 
 export default Search;

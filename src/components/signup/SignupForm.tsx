@@ -1,7 +1,5 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Auth} from 'aws-amplify';
-import {useState} from 'react';
+import { Auth } from 'aws-amplify';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -9,13 +7,13 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import { useNav } from '../../navigation/hooks';
 
 const SignupForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
+  const navigation = useNav()
   const onSignup = async (
     email: string,
     username: string,
@@ -30,12 +28,12 @@ Executing: onSignup/SignupForm.tsx
       await Auth.signUp({
         username: username.toLowerCase(),
         password,
-        attributes: {email},
-        autoSignIn: {enabled: true},
+        attributes: { email },
+        autoSignIn: { enabled: true },
       });
       console.log('Completed #1');
 
-      navigation.navigate('EmailVerification', {username, password});
+      navigation.navigate('EmailVerification', { username, password });
       console.log('Completed #2');
 
       console.log('Finished Executing: onSignup/SignupForm.tsx')
@@ -92,7 +90,7 @@ Executing: onSignup/SignupForm.tsx
 };
 
 const passwordBorderColor = (password: string) => {
-  if (password && password.length < 8) return {borderColor: 'red'};
+  if (password && password.length < 8) return { borderColor: 'red' };
 };
 
 const styles = StyleSheet.create({

@@ -4,8 +4,8 @@ import EmailVerification from '../screens/EmailVerificationScreen';
 import GuestProfile from '../screens/GuestProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NewPostScreen from '../screens/NewPostScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import ProfileUpdateScreen from '../screens/ProfileUpdateScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import SignupScreen from '../screens/SignupScreen';
 import Temp from '../screens/TempScree';
 
@@ -30,6 +30,7 @@ export const SignedOutStack = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="EmailVerification" component={EmailVerification} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 };

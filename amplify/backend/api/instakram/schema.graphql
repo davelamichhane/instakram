@@ -1,13 +1,12 @@
 type User
   @model
-  @auth(rules: [{allow: private, operations: [read]}, {allow: owner}]) {
+  @auth(rules: [{allow: private, operations: [read, update, create]}, {allow: owner}]) {
   username: String! @primaryKey
   name: String
   bio: String
   pronouns: String
   gender: String
   followers: [String]
-    @auth(rules: [{allow: private, operations: [read, update,create]}, {allow: owner}])
   following: [String]
   profilePicKey: String
 }

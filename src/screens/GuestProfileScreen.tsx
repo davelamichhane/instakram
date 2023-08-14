@@ -1,20 +1,19 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {API} from 'aws-amplify';
-import {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import {SingleItemFromUser} from '../components/types';
-import {updateFollowers, updateFollowing} from '../customGraphql/mutations';
+import { API } from 'aws-amplify';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { SingleItemFromUser } from '../components/types';
+import { updateFollowers, updateFollowing } from '../customGraphql/mutations';
 import {
   extractFollowersFromGuest,
   extractFollowing,
 } from '../customGraphql/queries';
+import { useNav } from '../navigation/hooks';
 import {
   fetchGuestData,
   resetGuestProfileInfo,
 } from '../store/guestProfileInfoSlice';
-import {useAppDispatch, useAppSelector} from '../store/hooks';
-import {fetchData} from '../store/profileInfoSlice';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchData } from '../store/profileInfoSlice';
 
 // Component starts here
 const GuestProfile: React.FC = () => {
@@ -29,12 +28,12 @@ const GuestProfile: React.FC = () => {
     gender,
     pronouns,
   } = useAppSelector(state => state.guestProfileInfo.profile.getUser);
-  const {username: loggedInUsername, following: followingArray} =
+  const { username: loggedInUsername, following: followingArray } =
     useAppSelector(state => state.profileInfo.profile.getUser);
   const [doesUserFollowGuest, setDoesUserFollowGuest] = useState(false);
 
   // other hooks
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigation = useNav()
   const dispatch = useAppDispatch();
 
   // utils
@@ -84,7 +83,7 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
       });
       console.log('Completed #2');
 
-      dispatch(fetchData({username: loggedInUsername, thangs: ['following']}));
+      dispatch(fetchData({ username: loggedInUsername, thangs: ['following'] }));
       console.log('Completed #3');
 
       const guestFollowersArrResponse = await API.graphql({
@@ -103,8 +102,8 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
       const newGuestFollowersArray = guestFollowersArray
         ? doesUserFollowGuest
           ? guestFollowersArray.filter(
-              username => username !== loggedInUsername,
-            )
+            username => username !== loggedInUsername,
+          )
           : [...guestFollowersArray, loggedInUsername]
         : [loggedInUsername];
 
@@ -118,7 +117,7 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
       });
       console.log('Completed #5');
 
-      dispatch(fetchGuestData({username, thangs: ['followers']}));
+      dispatch(fetchGuestData({ username, thangs: ['followers'] }));
       console.log('Completed #6');
 
       setDoesUserFollowGuest(!doesUserFollowGuest);
@@ -143,7 +142,7 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
     }
   };
 
-  const NumShow: React.FC<{name: string; number: number}> = ({
+  const NumShow: React.FC<{ name: string; number: number }> = ({
     name,
     number,
   }) => {
@@ -180,7 +179,7 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
           style={styles.image}
           source={
             profilePicKey
-              ? {uri: profilePicKey}
+              ? { uri: profilePicKey }
               : require('../assets/profile_icon.jpg')
           }
         />
@@ -204,7 +203,7 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
         }}>
         {/* Add Follow feature */}
         <TouchableOpacity style={styles.button} onPress={handleFollowUnfollow}>
-          <Text style={{color: '#fff'}}>
+          <Text style={{ color: '#fff' }}>
             {doesUserFollowGuest ? 'unfollow' : 'follow'}
           </Text>
         </TouchableOpacity>
@@ -213,7 +212,7 @@ Executing: handleFollowUnfollow/GuestProfileScreen.tsx
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Temp')}>
-          <Text style={{color: '#fff'}}>Message</Text>
+          <Text style={{ color: '#fff' }}>Message</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -258,11 +257,11 @@ const styles = StyleSheet.create({
   component: {
     flexDirection: 'column',
   },
-  number: {color: '#fff', alignSelf: 'center', fontWeight: 'bold'},
-  name: {color: '#fff', alignSelf: 'center', fontWeight: 'bold'},
+  number: { color: '#fff', alignSelf: 'center', fontWeight: 'bold' },
+  name: { color: '#fff', alignSelf: 'center', fontWeight: 'bold' },
   biobox: {},
-  bio: {color: '#fff'},
-  subscript: {fontSize: 10, color: '#ccc', textTransform: 'lowercase'},
+  bio: { color: '#fff' },
+  subscript: { fontSize: 10, color: '#ccc', textTransform: 'lowercase' },
   button: {
     backgroundColor: '#808080',
     borderRadius: 5,

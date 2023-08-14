@@ -1,14 +1,13 @@
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {View, Text, Image, StyleSheet, Button} from 'react-native';
-import {useAppDispatch, useAppSelector} from '../store/hooks';
-import {resetProfileInfo} from '../store/profileInfoSlice';
+import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import { useNav } from '../navigation/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { resetProfileInfo } from '../store/profileInfoSlice';
 
 const Temp: React.FC = () => {
   const dispatch = useAppDispatch();
   const profileData = useAppSelector(state => state.profileInfo.profile);
-  const guestProfileData = useAppSelector(state=>state.guestProfileInfo.profile)
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const guestProfileData = useAppSelector(state => state.guestProfileInfo.profile)
+  const navigation = useNav()
   const handeProfileLog = () => {
     if (profileData) {
       console.log(profileData);

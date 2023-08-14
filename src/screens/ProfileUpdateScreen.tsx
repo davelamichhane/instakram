@@ -1,5 +1,5 @@
-import {API, Storage} from 'aws-amplify';
-import {useState} from 'react';
+import { API, Storage } from 'aws-amplify';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,14 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {Divider} from 'react-native-elements';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {updateUser} from '../graphql/mutations';
-import {setActiveTab} from '../store/generalSlice';
+import { Divider } from 'react-native-elements';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { updateUser } from '../graphql/mutations';
+import { setActiveTab } from '../store/generalSlice';
 import awsmobile from '../aws-exports';
-import {useAppDispatch, useAppSelector} from '../store/hooks';
-import {fetchData} from '../store/profileInfoSlice';
-import { useNavigation } from '@react-navigation/native';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchData } from '../store/profileInfoSlice';
+import { useNav } from '../navigation/hooks';
 
 const initalObj = {
   name: '',
@@ -31,15 +31,14 @@ const {
 
 const ProfileUpdateScreen: React.FC = () => {
   const [profileInfo, setProfileInfo] = useState(initalObj);
-  const {username, profilePicKey} = useAppSelector(
+  const { username, profilePicKey } = useAppSelector(
     state => state.profileInfo.profile.getUser,
   );
   const dispatch = useAppDispatch();
-  const navigation = useNavigation()
-
+  const navigation = useNav()
   // handle text change in input fields
   const handleChange = (text: string, field: string) => {
-    setProfileInfo(prev => ({...prev, [field]: text}));
+    setProfileInfo(prev => ({ ...prev, [field]: text }));
   };
 
   // handle submit button on top right
@@ -50,18 +49,18 @@ const ProfileUpdateScreen: React.FC = () => {
       await API.graphql({
         query: updateUser,
         variables: {
-          input: {username, ...profileInfo},
+          input: { username, ...profileInfo },
         },
         authMode: 'AMAZON_COGNITO_USER_POOLS',
       });
       console.log('Completed #1')
       setProfileInfo(initalObj);
-      dispatch(fetchData({username, thangs:['name', 'bio', 'gender', 'pronouns']}));
+      dispatch(fetchData({ username, thangs: ['name', 'bio', 'gender', 'pronouns'] }));
       console.log('Completed #2')
       dispatch(setActiveTab('profile'));
       console.log('Completed #3')
     } catch (e) {
-      console.log('Error Origin: handelSubmit/ProfileUpdateScreen\n',e);
+      console.log('Error Origin: handelSubmit/ProfileUpdateScreen\n', e);
     }
   };
 
@@ -73,7 +72,7 @@ const ProfileUpdateScreen: React.FC = () => {
       // grab previous profile pic link so you can delete it after uploading a new one
 
       // launch image lib
-      const result = await launchImageLibrary({mediaType: 'photo'});
+      const result = await launchImageLibrary({ mediaType: 'photo' });
       if (result.assets && result.assets[0].uri) {
         const imageUri = result.assets[0].uri;
 
@@ -83,7 +82,7 @@ const ProfileUpdateScreen: React.FC = () => {
         const fileName = imageUri.split('/').pop();
         console.log('Completed #1')
         if (fileName) {
-          await Storage.put(fileName, imageBlob, {contentType: 'image/jpeg'});
+          await Storage.put(fileName, imageBlob, { contentType: 'image/jpeg' });
           console.log('Completed #2')
         }
         // update user info
@@ -103,13 +102,13 @@ const ProfileUpdateScreen: React.FC = () => {
         await Storage.remove(`public/${fileName}`);
         console.log('Completed #4')
         // fetch updated Data
-        dispatch(fetchData({username, thangs:['profilePicKey']}));
+        dispatch(fetchData({ username, thangs: ['profilePicKey'] }));
         console.log('Completed #5')
         dispatch(setActiveTab('home'));
         console.log('Completed #6')
       }
     } catch (e) {
-      console.log('Error Origin: handleUpload/ProfileUpdateScreen\n',e);
+      console.log('Error Origin: handleUpload/ProfileUpdateScreen\n', e);
     }
   };
 
@@ -118,8 +117,8 @@ const ProfileUpdateScreen: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         {/* Go Back Button */}
-        <TouchableOpacity onPress={()=>navigation.goBack()}>
-          <Text style={[styles.headerText, {fontSize: 24, fontWeight: '200'}]}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={[styles.headerText, { fontSize: 24, fontWeight: '200' }]}>
             X
           </Text>
         </TouchableOpacity>
@@ -129,18 +128,18 @@ const ProfileUpdateScreen: React.FC = () => {
 
         {/* Save Button */}
         <TouchableOpacity onPress={handleSubmit}>
-          <Text style={[styles.headerText, {color: '#0447cd'}]}>Save</Text>
+          <Text style={[styles.headerText, { color: '#0447cd' }]}>Save</Text>
         </TouchableOpacity>
       </View>
 
       {/* Profile Pic */}
       <View style={styles.imageBox}>
         <Image
-          source={ profilePicKey ?{uri:profilePicKey}: require('../assets/profile_icon.jpg')}
+          source={profilePicKey ? { uri: profilePicKey } : require('../assets/profile_icon.jpg')}
           style={styles.image}
         />
-        <TouchableOpacity style={{marginVertical: 5}} onPress={handleUpload}>
-          <Text style={{color: '#0447cd'}}>update profile pic</Text>
+        <TouchableOpacity style={{ marginVertical: 5 }} onPress={handleUpload}>
+          <Text style={{ color: '#0447cd' }}>update profile pic</Text>
         </TouchableOpacity>
       </View>
 
@@ -184,8 +183,8 @@ const ProfileUpdateScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor:'#000',
-    flex:1
+    backgroundColor: '#000',
+    flex: 1
   },
   label: {
     color: '#fff',
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
     padding: 3,
     color: '#fff',
   },
-  imageBox: {alignItems: 'center'},
+  imageBox: { alignItems: 'center' },
   image: {
     height: 80,
     width: 80,

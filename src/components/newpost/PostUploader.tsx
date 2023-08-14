@@ -1,15 +1,10 @@
-import {
-  ParamListBase,
-  RouteProp,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {API, Storage} from 'aws-amplify';
-import {useState} from 'react';
-import {View, Image, TextInput, Button} from 'react-native';
-import {createPost} from '../../graphql/mutations';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { API, Storage } from 'aws-amplify';
+import { useState } from 'react';
+import { View, Image, TextInput, Button } from 'react-native';
+import { createPost } from '../../graphql/mutations';
 import awsmobile from '../../aws-exports';
+import { useNav } from '../../navigation/hooks';
 
 const {
   aws_user_files_s3_bucket: bucket,
@@ -18,9 +13,9 @@ const {
 
 const PostUploader: React.FC = () => {
   const [captionText, setCaptionText] = useState('');
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const route = useRoute<RouteProp<{params: {imageUri: string}}>>();
-  const {imageUri} = route.params;
+  const navigation = useNav()
+  const route = useRoute<RouteProp<{ params: { imageUri: string } }>>();
+  const { imageUri } = route.params;
 
   const uploadImage = async (caption: string) => {
     try {
@@ -59,7 +54,7 @@ const PostUploader: React.FC = () => {
   return (
     <View>
       <Image
-        source={{uri: imageUri}}
+        source={{ uri: imageUri }}
         style={{
           height: 350,
           width: 350,
@@ -71,7 +66,7 @@ const PostUploader: React.FC = () => {
         placeholder="write a caption ..."
         placeholderTextColor="grey"
         multiline={true}
-        style={{color: 'white', fontSize: 16, marginBottom: 10}}
+        style={{ color: 'white', fontSize: 16, marginBottom: 10 }}
         onChangeText={text => setCaptionText(text)}
         value={captionText}
       />

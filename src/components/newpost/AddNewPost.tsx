@@ -1,9 +1,9 @@
-import {useNavigation} from '@react-navigation/native';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useNav } from '../../navigation/hooks';
 import PostUploader from './PostUploader';
 
 const AddNewPost: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNav()
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -15,7 +15,7 @@ const AddNewPost: React.FC = () => {
         </TouchableOpacity>
         <Text style={styles.headerText}>New Post</Text>
       </View>
-    <PostUploader />
+      <PostUploader />
     </View>
   );
 };

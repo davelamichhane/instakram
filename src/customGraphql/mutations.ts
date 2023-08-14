@@ -17,10 +17,9 @@ export const updateFollowing = /* GraphQL */ `
 `;
 
 export const updateFollowers = /* GraphQL */ `
-  mutation UpdateFollowing($username: String!, $array: [String!]) {
+  mutation UpdateFollowers($username: String!, $array: [String!]) {
     updateUser(
-      input: {followers: $array, username: $username}
-      condition: {username: $username}
+      input: {username: $username, followers:$array}
     ) {
       followers
     }
